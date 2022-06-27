@@ -6,14 +6,11 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Entypo from 'react-native-vector-icons/Entypo';
 
 
-const selectId = (id) => {
-    return data.find(item => item._id === id)
-}
 
 
 const HomeScreen = ({ navigation }) => {
 
-    const [id, setId] = useState(data[0]._id)
+    /*const [id, setId] = useState(data[0]._id)
     const [user, setUser] = useState(data[0].user)
     const [incomes, setIncomes] = useState(data[0].incomes)
     const [expenses, setExpenses] = useState(data[0].expenses)
@@ -31,14 +28,13 @@ const HomeScreen = ({ navigation }) => {
 
     const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
     const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
-    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)
+    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)*/
 
 
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
                 <View style={{ flexDirection: 'row' }}>
-                    <View style={styles.dropDownStyle}>
                       { /* <Picker
                             selectedValue={id}
                             onValueChange={(itemValue, itemIndex) => {
@@ -52,10 +48,10 @@ const HomeScreen = ({ navigation }) => {
                             }}>
                             {data.map(item => <Picker.Item label={item.user} value={item._id} key={item._id} />)}
                         </Picker>*/}
-                    </View>
+
 
                     <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                        <Text style={styles.txtSolde}>{user}</Text>
+                        <Text style={styles.txtSolde}>NAME</Text>
                         <Text style={styles.txtSolde}>Solde : TOTAL € <Entypo name="wallet" size={24} /></Text>
                     </View>
                 </View>
@@ -65,7 +61,7 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
                 <ScrollView>
-                        <View style={styles.line} key={index}>
+                        <View style={styles.line}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >CATEGORIE</Text>
                                 <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >DATE</Text>
@@ -77,7 +73,7 @@ const HomeScreen = ({ navigation }) => {
                 </ScrollView>
                 <Text style={styles.txtTitleCol}>Crédit</Text>
                 <ScrollView>
-                        <View style={styles.line} key={index}>
+                        <View style={styles.line}>
                             <View style={styles.lineLeft}>
                                 <Text style={styles.titleLine} >CATEGORIE</Text>
                                 <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >DATE</Text>

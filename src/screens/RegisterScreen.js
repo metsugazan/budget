@@ -112,6 +112,7 @@ const RegisterScreen = ({navigation}) => {
       });
       navigation.navigate('login')
     }
+    
     return (
         <ScrollView>
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

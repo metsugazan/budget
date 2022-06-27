@@ -1,6 +1,9 @@
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput  } from 'react-native';
 import { TextInput as TextInputEye } from 'react-native-paper';
+import auth from '@react-native-firebase/auth'
+//import { initializeAuth } from 'firebase/auth';
+import { getAuth, connectAuthEmulator, signInWithEmailAndPassword }  from 'firebase/auth'
 
 const LoginScreen = ({navigation}) => {
     const [text, setText] = useState('');
@@ -13,6 +16,26 @@ const LoginScreen = ({navigation}) => {
 
     const [borderColor, setBorderColor] = useState('#838383');
     const [color, setColor] = useState('red');
+
+
+//test***************************************************
+    const LogInUser = () => {
+
+        auth()
+        .signInWithEmailAndPassword(email, password)
+        .then((res) => {
+          console.log(res);
+          navigation.navigate('home')
+          
+        })
+        .catch((res) => {
+          console.log(res);
+        });
+    }
+//************************************************************ */
+
+
+
 
     const handleValidEmail = val => {
         let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
@@ -56,14 +79,18 @@ const LoginScreen = ({navigation}) => {
         else {
             setPasswordValidError("")
             passwordValid = true
+           
         }
 
         if (emailValid && passwordValid) {
-            alert('Bienvenue ' + email + ' !');
+            //alert('Bienvenue ' + email + ' !');
+
+            LogInUser()
+           
             //setEmail("");
             //setPassword("");
             //setConfirmPassword("");
-            navigation.navigate('Accueil')
+            //navigation.navigate('Accueil')
             //navigate('NextInscription');
         }
     }
