@@ -88,7 +88,7 @@ const HomeScreen = ({ navigation }) => {
 
 
 
-           {/* <View style={{ flex: 0.75, flexDirection: 'row' }}>
+            <View style={{ flex: 0.75, flexDirection: 'row' }}>
                 <View style={styles.containerBtn}>
                     <TouchableOpacity style={styles.btn} onPress={() => navigation.navigate('Revenus')}>
                         <MaterialCommunityIcons name="plus-circle" style={{ color: '#9F8236' }} size={52} />
@@ -101,7 +101,7 @@ const HomeScreen = ({ navigation }) => {
                         <Text style={{ color: '#adabab', fontWeight: 'bold' }}>Ajout dépenses</Text>
                     </TouchableOpacity>
                 </View>
-                    </View> */}
+                    </View> 
         </View>
     )
 

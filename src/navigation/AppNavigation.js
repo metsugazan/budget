@@ -9,6 +9,8 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 
 import HomeScreen from '../screens/HomeScreen';
+import AddIncomeScreen from '../screens/AddIncomeScreen';
+import AddExpenseScreen from '../screens/AddExpenseScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -21,6 +23,8 @@ const StackNavigation = () => {
             <Stack.Screen name="login" options={{ headerTitleAlign: 'center', headerShown: false }} component={LoginScreen} />
             <Stack.Screen name="register" options={{ title: 'Création compte', headerTitleAlign: 'center', headerStyle: { backgroundColor: '#2738C2' }, headerTitleStyle: { color: 'white' }, headerTintColor: 'white' }} component={RegisterScreen} />
             <Stack.Screen name="home" options={{ headerShown: false }} component={TabNavigation} />
+            <Stack.Screen name="Revenus" options={{ headerTitleAlign: 'center', headerStyle: {backgroundColor:'#2738C2'}, headerTitleStyle: {color:'white'}, headerTintColor:'white' }} component={AddIncomeScreen} />
+            <Stack.Screen name="Depenses" options={{ headerTitleAlign: 'center', headerStyle: {backgroundColor:'#2738C2'}, headerTitleStyle: {color:'white'}, headerTintColor:'white' }} component={AddExpenseScreen} />
         </Stack.Navigator>
         </NavigationContainer>
     )
