@@ -2,147 +2,139 @@ import { StyleSheet, View, ScrollView, Button, Text, TouchableOpacity } from 're
 import { Formik } from 'formik'
 import { TextInput } from 'react-native-paper'
 import { Picker } from '@react-native-picker/picker'
-import React, { useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import DateTimePicker from '@react-native-community/datetimepicker'
+import React, { useState, useContext } from 'react'
 import dayjs from 'dayjs'
-import * as yup from 'yup'
-import { DefaultTheme, Provider as PaperProvider } from 'react-native-paper'
+import * as Yup from 'yup';
+import UserContext from "../components/UserContext";
+import firestore from '@react-native-firebase/firestore';
 
+const AddIncomeScreen = ({navigation}) => {
+  const UserContext_ = useContext(UserContext)
 
+  const CategoryList = [
+    "Salaire et assimilé",
+    "Revenu financier",
+    "Rente",
+    "Pension alimentaire",
+    "Allocation chomage",
+    "Prestations sociales",
+    "Revenu foncier",
+    "Revenu exceptionnel",
+    "Autre revenu"
+  ]
 
-
-
-
-const AddIncomeScreen = () => {
-  const [date, setDate] = useState(new Date())
-  const [dateTimeShow, setDateTimeShow] = useState(false)
-  const [categorie, setCategorie] = useState('')
-  const [disabled, setDisabled] = useState(true)
-  const fdate = date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear()
-  const navigation = useNavigation()
-
-  const categorieArray = ['']
-
-  const checkCategorie = (value) => {
-    if (!value) {
-      setDisabled(true)
-    } else {
-      if (!categorieArray.includes(value)) {
-        setDisabled(false)
-    }
+  const addIncomes = async ({ amount, date, category, comments }) => {
+    await firestore().collection('Users').doc(UserContext_.user.uid).collection('incomes').add({
+      amount: amount,
+      date: date,
+      category: category,
+      comments: comments,
+      user: UserContext_.user.uid,
+      incomes: true
+    }).then(() => {
+      console.log('revenu ajouté');
+    }).catch(error => {
+      console.log(error);
+    })
   }
-    setCategorie(value)
+
+
+  const validationIncomes = Yup.object().shape({
+    amount: Yup
+      .number("Montant invalide")
+      .required("Mettre un montant"),
+    date: Yup
+      .date('Date invalide')
+      .default(() => new Date()),
+    category: Yup
+      .string()
+      .required("Selectionner une catégorie")
+      .oneOf(CategoryList),
+    comments: Yup
+      .string("Commentaire invalide")
+  })
+
+  const initialValues = {
+    amount: '',
+    date: dayjs(new Date()).format('DD/MM/YYYY'),
+    category: '',
+    comments: ''
   }
+
+
 
   return (
     <Formik
-     
-      initialValues={{ nom: '', prénom: '', montant: '', commentaire: ''}}
-      onSubmit={values => navigation.navigate('Home',{values,date2: fdate,categorie: categorie})}
-      
+      initialValues={initialValues}
+      validationSchema={validationIncomes}
+      onSubmit={values => [navigation.navigate('Home', { values }), console.log(values)]}
+
     >
-      {({ handleChange, handleBlur, handleSubmit, values }) => (
-          <View style={styles.container}>
-            <View style={styles.boxForm}>
-              <View style={{ flex: 1 }}>
-                <TextInput
-                  label="Nom"
-                  style={styles.txtInput}
-                  placeholder='Entrer le nom du bénéficiaire'
-                  onChangeText={handleChange('nom')}
-                  onBlur={handleBlur('nom')}
-                  returnKeyType="next"
-                  value={values.nom}
-                />
-                
-                <TextInput
-                  label="Prénom"
-                  style={styles.txtInput}
-                  placeholder='Entrer le prénom dubénéficiaire'
-                  onChangeText={handleChange('prénom')}
-                  onBlur={handleBlur('prénom')}
-                  returnKeyType="next"
-                  value={values.prénom}
-                />
-                
-                <TextInput
-                  label="Date de déclaration"
-                  style={styles.txtInput}
-                  value={dayjs(date).format('DD-MM-YYYY')}
-                  onChangeText={() => { }}
-                  onBlur={() => { }}
-                  onFocus={() => {
-                    setDateTimeShow(true)
-                  }}
-                />
-                {dateTimeShow && (
-                  <DateTimePicker
-                    mode="date"
-                    value={new Date()}
-                    is24Hour={true}
-                    onChange={(event, date) => {
-                      setDateTimeShow(false)
-                      setDate(date)
-                    }}
-                  />
-                )}
-                <TextInput
-                  label="Montant"
-                  style={styles.txtInput}
-                  placeholder='Entrer le montant'
-                  onChangeText={handleChange('montant')}
-                  onBlur={handleBlur('montant')}
-                  returnKeyType="next"
-                  value={values.montant}
-                  keyboardType='numeric'
-                />
-               
-                <View style={styles.dropDownStyle}>
-                  <Picker
-                    selectedValue={categorie}
-                    style={{color: '#fff', placeholderTextColor: '#fff'}}
-                    backgroundColor='#2B6747'
-                    onValueChange={(itemValue, itemIndex) => {
-                      checkCategorie(itemValue)
+      {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
+        <View style={styles.container}>
+          <View style={styles.boxForm}>
+            <View style={{ flex: 1 }}>
 
-                    }}
-                  >
-                    <Picker.Item label="Catégorie" value="" />
-                    <Picker.Item label="Alimentaires" value="Alimentaires" />
-                    <Picker.Item label="Factures" value="Factures" />
-                    <Picker.Item label="Transport" value="Transport" />
-                    <Picker.Item label="Logement" value="Logement" />
-                    <Picker.Item label="Santé" value="Santé" />
-                    <Picker.Item label="Vacances" value="Vacances" />
-                    <Picker.Item label="Shopping" value="Shopping" />
-                    <Picker.Item label="Autre" value="Autre" />
+              <TextInput
+                label="Montant"
+                placeholder='Entrer le montant'
+                style={styles.txtInput}
+                onChangeText={handleChange('amount')}
+                onBlur={handleBlur('amount')}
+                keyboardType="number-pad"
+                returnKeyType="next"
+              />
+              {errors.amount &&
+                <Text style={styles.error}>{errors.amount}</Text>
+              }
 
-                  </Picker>
-                </View>
-                
+              <TextInput
+                label="Date de déclaration"
+                style={styles.txtInput}
+                onChangeText={handleChange('date')}
+                onBlur={handleBlur('date')}
+                placeholder="JJ/MM/AAAA"
+              />
+              {errors.date &&
+                <Text style={styles.error}>{errors.date}</Text>
+              }
 
 
-                <TextInput
-                  label="Commentaire"
-                  multiline={true}
-                  numberOfLines={4}
-                  style={styles.txtComment}
-                  placeholder='Entrer un commentaire'
-                  onChangeText={handleChange('commentaire')}
-                  onBlur={handleBlur('commentaire')}
-                  returnKeyType= 'done'
-                  value={values.commentaire}
-                />
+              <TextInput
+                style={styles.dropDownStyle}
+                onChangeText={handleChange('category')}
+                onBlur={handleBlur('category')}
+
+              />
+              {errors.category &&
+                <Text style={styles.error}>{errors.category}</Text>
+              }
+
+              <TextInput
+                label="Commentaire"
+                style={styles.txtComment}
+                multiline={true}
+                numberOfLines={4}
+                onChangeText={handleChange('comments')}
+                onBlur={handleBlur('comments')}
+              />
+              {errors.comments &&
+                <Text style={styles.error}>{errors.comments}</Text>
+              }
 
 
-                <TouchableOpacity style={{ backgroundColor: '#9F8236', alignItems: 'center', marginVertical: 10, justifyContent: 'center', height: 50, borderRadius: 30 }} disabled={disabled} onPress={handleSubmit} title="Submit">
-                  <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>Ajouter</Text>
-                </TouchableOpacity>
-                
-              </View>
+              <TouchableOpacity style={{ backgroundColor: '#9F8236', alignItems: 'center', marginVertical: 10, justifyContent: 'center', height: 50, borderRadius: 30 }} onPress={() => {
+                handleSubmit()
+                if (isValid) {
+                  addIncomes(values)
+                }
+              }} title="Submit">
+                <Text style={{ color: 'white', fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>Ajouter</Text>
+              </TouchableOpacity>
+
             </View>
           </View>
+        </View>
       )}
     </Formik>
   )
@@ -166,6 +158,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     color: 'white',
     justifyContent: 'center',
+  },
+  error: {
+    fontSize: 15,
+    color: 'red',
+    textAlign: 'left',
+    width: 300
   },
   txtInput: {
     borderColor: '#9F8236',

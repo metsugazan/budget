@@ -5,7 +5,9 @@ import { Picker } from '@react-native-picker/picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 
-
+import UserContext from "../components/UserContext";
+import firestore from '@react-native-firebase/firestore';
+import TransacComponent from "../components/TransacComponent";
 
 
 const HomeScreen = ({ navigation }) => {
@@ -29,63 +31,76 @@ const HomeScreen = ({ navigation }) => {
     const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
     const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
     const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)*/
+    const [expenses, setExpenses] = useState([])
+    const [incomes, setIncomes] = useState([])
+    const [data_, setdata_] = useState([])
+
+    const UserContext_ = useContext(UserContext)
+
+    const GetData = async () => {
+
+        await firestore()
+            .collection('Users')
+            .doc(UserContext_.user.uid)
+            .collection('incomes')
+            .onSnapshot(documentSnapshot => {
+
+                if (documentSnapshot != null) {
+                    console.log(typeof (documentSnapshot), documentSnapshot)
+                    setIncomes(documentSnapshot._docs)
+                } else {
+                    console.log(" Document does not exist ");
+                }
+
+            })
+
+        await firestore()
+            .collection('Users')
+            .doc(UserContext_.user.uid)
+            .collection('expenses')
+            .onSnapshot(documentSnapshot => {
+
+                if (documentSnapshot != null) {
+                    console.log(typeof (documentSnapshot), documentSnapshot)
+                    setExpenses(documentSnapshot._docs)
+                } else {
+                    console.log(" Document does not exist ");
+                }
+
+            })
+
+        setdata_(expenses.concat(incomes))
+    }
+
+    useEffect(() => {
+        GetData()
+    }, [UserContext_.user.uid]);
+
+
 
 
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
                 <View style={{ flexDirection: 'row' }}>
-                      { /* <Picker
-                            selectedValue={id}
-                            onValueChange={(itemValue, itemIndex) => {
-                                setId(itemValue)
-                                setUser(selectId(itemValue).user)
-                                setIncomes(selectId(itemValue).incomes)
-                                setExpenses(selectId(itemValue).expenses)
-                                setDate(selectId(itemValue).date)
-                                setAmount(selectId(itemValue).amount)
-                                setCategory(selectId(itemValue).category)
-                            }}>
-                            {data.map(item => <Picker.Item label={item.user} value={item._id} key={item._id} />)}
-                        </Picker>*/}
-
-
                     <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                        <Text style={styles.txtSolde}>NAME</Text>
+                        <Text style={styles.txtSolde}>Bonjour {UserContext_.user.email} !</Text>
                         <Text style={styles.txtSolde}>Solde : TOTAL € <Entypo name="wallet" size={24} /></Text>
                     </View>
                 </View>
             </View>
-            
-            <Text style={styles.txtSolde}>Dernières transactions</Text>       
+
+            <Text style={styles.txtSolde}>Dernières transactions</Text>
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
                 <ScrollView>
-                        <View style={styles.line}>
-                            <View style={styles.lineLeft}>
-                                <Text style={styles.titleLine} >CATEGORIE</Text>
-                                <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >DATE</Text>
-                            </View>
-                            <View style={styles.lineRight}>
-                                <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >- AMOUNT €</Text>
-                            </View>
+                    {data_.map((item, index) => (
+                        <View key={index}>
+                            <TransacComponent category={item._data.category} date={item._data.date} montant={((typeof(item._data.incomes) == "undefined") ? -Number(item._data.amount) : Number(item._data.amount))} /> 
                         </View>
-                </ScrollView>
-                <Text style={styles.txtTitleCol}>Crédit</Text>
-                <ScrollView>
-                        <View style={styles.line}>
-                            <View style={styles.lineLeft}>
-                                <Text style={styles.titleLine} >CATEGORIE</Text>
-                                <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >DATE</Text>
-                            </View>
-                            <View style={styles.lineRight}>
-                                <Text style={{ color: '#EEF1F1', textAlign: 'right', marginHorizontal: 10, fontSize: 20 }} >AMOUNT €</Text>
-                            </View>
-                        </View>
+                    ))}
                 </ScrollView>
             </View>
-
-
 
 
             <View style={{ flex: 0.75, flexDirection: 'row' }}>
@@ -101,7 +116,7 @@ const HomeScreen = ({ navigation }) => {
                         <Text style={{ color: '#adabab', fontWeight: 'bold' }}>Ajout dépenses</Text>
                     </TouchableOpacity>
                 </View>
-                    </View> 
+            </View>
         </View>
     )
 

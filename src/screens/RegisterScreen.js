@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/AntDesign';
 
 import  auth from '@react-native-firebase/auth';
 
+import firestore from '@react-native-firebase/firestore';
+
 const RegisterScreen = ({navigation}) => {
     const [text, setText] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(true);
