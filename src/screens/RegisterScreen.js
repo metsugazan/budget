@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import  auth from '@react-native-firebase/auth';
 
 import firestore from '@react-native-firebase/firestore';
+import { updateProfile } from '@react-native-firebase/auth';
 
 const RegisterScreen = ({navigation}) => {
     const [text, setText] = useState('');
@@ -102,18 +103,25 @@ const RegisterScreen = ({navigation}) => {
             RegisterUser()
         }
     }
-  
+
+    /*function create () {
+        firestore().collection('Users').add({
+username: 'Johnny',
+        })
+    }*/
+
     const RegisterUser = () => {
-      auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((re) => {
-        console.log(re);
-      })
-      .catch((re) => {
-        console.log(re);
-      });
-      navigation.navigate('login')
-    }
+        auth()
+        .createUserWithEmailAndPassword(email, password)
+        .then((re) => {
+          console.log(re);
+        })
+        .catch((re) => {
+          console.log(re);
+        });
+        //create()
+        navigation.navigate('login')
+      }
     
     return (
         <ScrollView>

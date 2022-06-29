@@ -11,6 +11,10 @@ import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
+import AccountScreen from '../screens/AccountScreen';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 
 const Stack = createNativeStackNavigator();
@@ -30,11 +34,39 @@ const StackNavigation = () => {
     )
 }
 
-
+const homeName = "Accueil";
+const accountName = "Account";
+//const StatsName = "Statistiques";
 const TabNavigation = () => {
     return (
-            <Tab.Navigator initialRouteName="Home" tabBarOptions={{ activeTintColor: '#2738C2', inactiveTintColor: '#838383', style: { backgroundColor: '#fff' } }}>
+            <Tab.Navigator initialRouteName="Home" screenOptions={({ route }) => ({
+                tabBarStyle: { backgroundColor: '#222222', paddingBottom: 5 },
+                tabBarLabelStyle: {
+                  fontSize: 10,
+                  fontWeight: 'bold',
+                },
+                tabBarActiveTintColor: '#9F8236',
+                tabBarInactiveTintColor: '#adabab',
+                headerTitleAlign: 'center',
+                tabBarIcon: ({ focused, color, size }) => {
+                  let iconName;
+                  let rn = route.name;
+        
+                  if (rn === homeName) {
+                    iconName = Platform.OS === 'ios' ? `home${focused ? '' : 'home'}` : 'home';
+                  } else if (rn === accountName) {
+                    iconName = Platform.OS === 'ios' ? `bank${focused ? '' : 'bank'}` : 'bank';
+                  } /*else if (rn === StatsName) {
+                    iconName = Platform.OS === 'ios' ? `chart-timeline-variant${focused ? '' : 'chart-timeline-variant'}` : 'chart-timeline-variant';
+                  }*/
+        
+                  return <Icon name={iconName} size={size} color={focused ? '#9F8236' : '#adabab'} style={{ marginTop: 5 }} />
+        
+        
+                }
+    })}>
                 <Tab.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
+                <Tab.Screen name="Account" options={{title: 'Compte', headerShown: false}} component={AccountScreen} />
             </Tab.Navigator>
     )
 }

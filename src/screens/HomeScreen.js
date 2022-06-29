@@ -49,7 +49,7 @@ const HomeScreen = ({ navigation }) => {
                     console.log(typeof (documentSnapshot), documentSnapshot)
                     setIncomes(documentSnapshot._docs)
                 } else {
-                    console.log(" Document does not exist ");
+                    console.log("Document inexistant");
                 }
 
             })
@@ -64,7 +64,7 @@ const HomeScreen = ({ navigation }) => {
                     console.log(typeof (documentSnapshot), documentSnapshot)
                     setExpenses(documentSnapshot._docs)
                 } else {
-                    console.log(" Document does not exist ");
+                    console.log("Document inexistant");
                 }
 
             })
@@ -84,7 +84,8 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.containerSolde}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                        <Text style={styles.txtSolde}>Bonjour {UserContext_.user.email} !</Text>
+                        <Text style={styles.txtSolde}>Bonjour {UserContext_.user.email.split("@")[0]} !</Text>
+
                         <Text style={styles.txtSolde}>Solde : TOTAL € <Entypo name="wallet" size={24} /></Text>
                     </View>
                 </View>

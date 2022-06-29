@@ -1,28 +1,32 @@
+import {View,Text, StyleSheet} from 'react-native'
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native'
 import dayjs from 'dayjs'
 
-const TransactionComponent = (props) => {
+const AccountComponent = (props) => {
 
-    const { category, date, montant } = props
+    const {name,category,date,montant,comments} = props
 
     let date_ = dayjs(date).locale('fr-FR').format('DD/MM/YYYY')
 
-    return (
-        <View style={styles.line}>
-            <View style={styles.lineLeft}>
-                <Text style={styles.titleLine}>{category}</Text>
-                <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{date_}</Text>
+    return(
+        <ScrollView>
+            <View style={styles.line} >
+                <View style={styles.lineLeft}>
+                    <Text style={styles.titleLine} >{item.user}</Text>
+                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Catégorie : {category}</Text>
+                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{comments} </Text>
+                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} > {date_} </Text>
+                </View>
+                <View style={styles.lineRight}>
+                    <Text style={{fontWeight:'bold', textAlign: 'right', marginHorizontal: 10, fontSize: 20, color:montant < 0 ? "red" : "green"}}>{montant < 0 && "-" }{montant > 0 && "+" } {Math.abs(montant)} €</Text>
+                </View>
             </View>
-            <View style={styles.lineRight}>
-                <Text style={{ fontWeight: 'bold', color: montant < 0 ? "red" : "green" }}>{montant < 0 && "-"}{montant > 0 && "+"} {Math.abs(montant)} €</Text>
-            </View>
-        </View>
+    </ScrollView>
+
     )
 }
 
-export default TransactionComponent
-
+export default AccountComponent
 
 const styles = StyleSheet.create({
 
@@ -31,15 +35,15 @@ const styles = StyleSheet.create({
         backgroundColor: '#0A0A0A'
     },
     containerSolde: {
-        flex: 0.75,
+        flex: 0.5,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#2B6747',
         marginBottom: 8,
     },
     boxTransac: {
-        flex: 2.5,
-        marginHorizontal: 15
+        flex: 2.20,
+        marginHorizontal: 15,
     },
     txtTitleCol: {
         fontWeight: 'bold',
@@ -50,14 +54,13 @@ const styles = StyleSheet.create({
     },
     line: {
         flexDirection: 'row',
-        flex: 0.19,
-        marginBottom: 10
+        flex: 0.17,
     },
     lineLeft: {
         flex: 1.85,
         borderBottomWidth: 1,
         borderBottomColor: '#adabab',
-        paddingBottom: 10
+        paddingBottom: 5
     },
     lineRight: {
         flex: 1.20,
@@ -65,7 +68,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#adabab',
         alignItems: 'flex-end',
         justifyContent: 'center',
-        paddingBottom: 10
+        paddingBottom: 5
     },
     titleLine: {
         color: '#EEF1F1',
@@ -76,9 +79,10 @@ const styles = StyleSheet.create({
     },
     txtSolde: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 22,
         textAlign: 'center',
-        color: 'white'
+        color: 'white',
+        marginBottom: 10
     },
     containerBtn: {
         flex: 1,
@@ -90,8 +94,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     dropDownStyle: {
+        marginTop: 30,
         width: '50%',
-        flex: 0.85,
         borderColor: '#838383',
         paddingHorizontal: 5,
         backgroundColor: '#adabab',
