@@ -2,11 +2,8 @@ import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput  } from 'react-native';
 import { TextInput as TextInputEye } from 'react-native-paper';
 import auth from '@react-native-firebase/auth'
-//import { initializeAuth } from 'firebase/auth';
-import { getAuth, connectAuthEmulator, signInWithEmailAndPassword }  from 'firebase/auth'
 
 const LoginScreen = ({navigation}) => {
-    const [text, setText] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(true);
 
     const [email, setEmail] = useState('');
@@ -18,7 +15,6 @@ const LoginScreen = ({navigation}) => {
     const [color, setColor] = useState('red');
 
 
-//test***************************************************
     const LogInUser = () => {
 
         auth()
@@ -32,9 +28,6 @@ const LoginScreen = ({navigation}) => {
           console.log(res);
         });
     }
-//************************************************************ */
-
-
 
 
     const handleValidEmail = val => {
@@ -83,10 +76,8 @@ const LoginScreen = ({navigation}) => {
         }
 
         if (emailValid && passwordValid) {
-            //alert('Bienvenue ' + email + ' !');
 
-            LogInUser()
-           
+            LogInUser()          
             //setEmail("");
             //setPassword("");
             //setConfirmPassword("");
