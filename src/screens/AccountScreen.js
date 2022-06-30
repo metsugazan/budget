@@ -1,8 +1,9 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, FlatList } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
-import { Picker } from '@react-native-picker/picker';
 import Entypo from 'react-native-vector-icons/Entypo';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 
 import UserContext from '../components/UserContext';
@@ -16,24 +17,29 @@ const AccountScreen = (props) => {
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
-                <View style={styles.dropDownStyle}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ flex: 1, alignItems: 'center', marginLeft: 10, justifyContent: 'center' }}>
+                        <Text style={styles.txtTitleCol}>Débit : - {UserContext_.expenses.toFixed(2)} €</Text>
+                        <Text style={styles.txtTitleCol}>Crédit : {UserContext_.incomes.toFixed(2)} €</Text>
+                        <Text style={styles.txtSolde}>Solde total : {UserContext_.solde.toFixed(2)} € <Entypo name="wallet" size={24} /></Text>
+                    </View>
+                    <TouchableOpacity onPress={() => { onLogout() }} ><MaterialCommunityIcons name='logout' size={40} style={{ color: 'white', marginRight:10 }} /></TouchableOpacity>
 
-                </View>
-              
-                <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                   <Text style={styles.txtSolde}>Solde : {UserContext_.solde} € <Entypo name="wallet" size={24} /></Text>
                 </View>
             </View>
 
 
             <View style={styles.boxTransac}>
-                <Text style={styles.txtTitleCol}>Débit - Total : - {UserContext_.expenses} €</Text>
-                <Text style={styles.txtTitleCol}>Crédit - Total : {UserContext_.incomes} €</Text>
-                {UserContext_.data_.sort((a,b) => new Date(b.date) - new Date(a.date)).map((item, index) => {
-                    <View key={index}>
-                <AccountComponent comments={item._data.comments}  name={item._data.category} category={item._data.category} date={item._data.date} montant={((typeof(item._data.incomes) == "undefined") ? -Number(item._data.amount) : Number(item._data.amount))} />
-                </View>
-})}
+
+                <ScrollView>
+                    {UserContext_.data_.sort((a, b) => new Date(b.date) - new Date(a.date)).map((item, index) => {
+                        return (
+                            <View key={index}>
+                                <AccountComponent comments={item._data.comments} name={item._data.category} category={item._data.category} date={item._data.date} montant={((typeof (item._data.incomes) == "undefined") ? -Number(item._data.amount) : Number(item._data.amount))} />
+
+                            </View>
+                        )
+                    })}</ScrollView>
             </View>
 
         </View>
@@ -65,7 +71,8 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: "#EEF1F1",
         textAlign: 'center',
-        marginVertical: 5
+        marginVertical: 5,
+        textAlign: 'center'
     },
     line: {
         flexDirection: 'row',

@@ -12,6 +12,7 @@ import HomeScreen from '../screens/HomeScreen';
 import AddIncomeScreen from '../screens/AddIncomeScreen';
 import AddExpenseScreen from '../screens/AddExpenseScreen';
 import AccountScreen from '../screens/AccountScreen';
+import StatsScreen from '../screens/StatsScreen';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -34,9 +35,9 @@ const StackNavigation = () => {
     )
 }
 
-const homeName = "Accueil";
+const homeName = "Home";
 const accountName = "Account";
-//const StatsName = "Statistiques";
+const StatsName = "Statistiques";
 const TabNavigation = () => {
     return (
             <Tab.Navigator initialRouteName="Home" screenOptions={({ route }) => ({
@@ -56,17 +57,19 @@ const TabNavigation = () => {
                     iconName = Platform.OS === 'ios' ? `home${focused ? '' : 'home'}` : 'home';
                   } else if (rn === accountName) {
                     iconName = Platform.OS === 'ios' ? `bank${focused ? '' : 'bank'}` : 'bank';
-                  } /*else if (rn === StatsName) {
+                  } else if (rn === StatsName) {
                     iconName = Platform.OS === 'ios' ? `chart-timeline-variant${focused ? '' : 'chart-timeline-variant'}` : 'chart-timeline-variant';
-                  }*/
+                  }
         
                   return <Icon name={iconName} size={size} color={focused ? '#9F8236' : '#adabab'} style={{ marginTop: 5 }} />
         
         
                 }
     })}>
-                <Tab.Screen name="Home" options={{ headerShown: false }} component={HomeScreen} />
+                <Tab.Screen name="Home" options={{title: 'Accueil', headerShown: false}} component={HomeScreen} />
                 <Tab.Screen name="Account" options={{title: 'Compte', headerShown: false}} component={AccountScreen} />
+                <Tab.Screen name="Statistiques" options={{headerShown: false}} component={StatsScreen} />
+
             </Tab.Navigator>
     )
 }

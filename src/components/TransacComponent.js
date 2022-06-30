@@ -7,6 +7,9 @@ const TransactionComponent = (props) => {
     const { category, date, montant } = props
 
     let date_ = dayjs(date).locale('fr-FR').format('DD/MM/YYYY')
+    if (date_ == "Invalid Date") {
+        date_ = date
+    }
 
     return (
         <View style={styles.line}>

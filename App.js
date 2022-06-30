@@ -8,7 +8,7 @@ import AppNavigation from './src/navigation/AppNavigation';
 import UserContext from './src/components/UserContext';
 import  auth from '@react-native-firebase/auth';
 
-import DataComponent from './src/components/DataComponent';
+import {GetData} from './src/components/GetData';
 
 
 const theme = {
@@ -27,33 +27,35 @@ export default function App() {
 
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
-
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [email_, setEmail_] = useState();
-  const [password_, setPassword_] = useState();
-  const [errorMessage, setErrorMessage] = useState();
   const [expenses, setexpenses] = useState(0)
   const [incomes, setincomes] = useState(0)
   const [solde,setSolde] = useState(0)
-  const [expenses_array, setexpenses_array] = useState([])
-  const [incomes_array, setincomes_array] = useState([])
+  const [expenses_array, setExpenses_array] = useState([])
+  const [incomes_array, setIncomes_array] = useState([])
   const [data_, setdata_] = useState([])
 
 
-  await DataComponent (uid) {
-    setexpenses(expense__)
-    setincomes(incomes__)
-    setSolde(solde__)
-    setexpenses_array(expenses__array)
-    setincomes_array(incomes__array)
-    setdata_(data__)
-  }
+  const SetSolde_ = async (uid) => {
 
+    await GetData(uid).then(data => {
+      setexpenses(data.expense__)
+      setincomes(data.incomes__)
+      setExpenses_array(data.expenses__array)
+      setIncomes_array(data.incomes__array)
+      setdata_(data.expenses__array.concat(data.incomes__array))
+      setSolde(data.solde__)
+    }).catch(error => {
+      console.log("Error getting documents: ", error);
+    })
+
+  }
 
 
   function onAuthStateChanged(user) {
     setUser(user);
+    if (user != null){
+    SetSolde_(user.uid)
+    }
     if (initializing) setInitializing(false);
   }
 
@@ -70,7 +72,7 @@ export default function App() {
   if (initializing) return null;
 
   if (!user) {
-      console.log('Aucune connexion')
+      console.log('Deconnecter')
   }
   
   return (

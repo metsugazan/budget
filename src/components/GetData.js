@@ -2,13 +2,13 @@ import React, { useState,useEffect,useContext } from "react";
 
 import firestore from '@react-native-firebase/firestore';
 
-const DataComponent = async() => {
-
-    const expense__ = 0
-    const incomes__ = 0
-    const expenses__array = []
-    const incomes__array = []
-    const solde__ = 0
+export const GetData = async (id) => {
+    
+    let expense__ = 0
+    let incomes__ = 0
+    let expenses__array = []
+    let incomes__array = []
+    let solde__ = 0
 
     await firestore()
     .collection('Users')
@@ -29,7 +29,7 @@ const DataComponent = async() => {
 
 
         } else {
-        console.log("Document inexistant");
+        console.log(" Document expenses does not exist ");
         }
 
     })
@@ -51,7 +51,7 @@ const DataComponent = async() => {
             
         }
         } else {
-        console.log("Document inexistant");
+        console.log(" Document incomes does not exist ");
         }
 
     })
@@ -61,6 +61,3 @@ const DataComponent = async() => {
     return {expense__,incomes__,expenses__array,incomes__array,solde__}
 
 }
-
-export default DataComponent;
-

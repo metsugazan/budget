@@ -4,24 +4,22 @@ import dayjs from 'dayjs'
 
 const AccountComponent = (props) => {
 
-    const {name,category,date,montant,comments} = props
+    const {category,date,montant,comments} = props
 
-    let date_ = dayjs(date).locale('fr-FR').format('DD/MM/YYYY')
+    //const date_ = dayjs(date).locale('fr-FR').format('DD/MM/YYYY')
 
     return(
-        <ScrollView>
+
             <View style={styles.line} >
                 <View style={styles.lineLeft}>
-                    <Text style={styles.titleLine} >{item.user}</Text>
-                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >Catégorie : {category}</Text>
-                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >{comments} </Text>
-                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} > {date_} </Text>
+                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10, fontWeight: 'bold' }} >{category}</Text>
+                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} >Commentaire: {comments}</Text>
+                    <Text style={{ color: '#adabab', textAlign: 'left', marginHorizontal: 10 }} > {date} </Text>
                 </View>
                 <View style={styles.lineRight}>
                     <Text style={{fontWeight:'bold', textAlign: 'right', marginHorizontal: 10, fontSize: 20, color:montant < 0 ? "red" : "green"}}>{montant < 0 && "-" }{montant > 0 && "+" } {Math.abs(montant)} €</Text>
                 </View>
             </View>
-    </ScrollView>
 
     )
 }

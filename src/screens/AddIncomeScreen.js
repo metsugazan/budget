@@ -1,4 +1,4 @@
-import { StyleSheet, View, ScrollView, Button, Text, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { Formik } from 'formik'
 import { TextInput } from 'react-native-paper'
 import { Picker } from '@react-native-picker/picker'
@@ -7,10 +7,25 @@ import dayjs from 'dayjs'
 import * as Yup from 'yup';
 import UserContext from "../components/UserContext";
 import firestore from '@react-native-firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
 const AddIncomeScreen = ({navigation}) => {
   const UserContext_ = useContext(UserContext)
+  const [isPickerShow, setIsPickerShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const categorieArray = [''];
 
+  const showPicker = () => {
+      setIsPickerShow(true);
+  };
+
+  const onChange = (event, value) => {
+      setDate(value);
+      if (Platform.OS === 'android') {
+          setIsPickerShow(false);
+      }
+  };
+  
   const CategoryList = [
     "Salaire et assimilé",
     "Revenu financier",
@@ -43,13 +58,13 @@ const AddIncomeScreen = ({navigation}) => {
     amount: Yup
       .number("Montant invalide")
       .required("Mettre un montant"),
-    date: Yup
+    /*date: Yup
       .date('Date invalide')
-      .default(() => new Date()),
+      .required("Mettre une date"),*/
     category: Yup
       .string()
-      .required("Selectionner une catégorie")
-      .oneOf(CategoryList),
+      .required("Selectionner une catégorie"),
+      //.oneOf(CategoryList),
     comments: Yup
       .string("Commentaire invalide")
   })
@@ -88,24 +103,57 @@ const AddIncomeScreen = ({navigation}) => {
                 <Text style={styles.error}>{errors.amount}</Text>
               }
 
-              <TextInput
-                label="Date de déclaration"
-                style={styles.txtInput}
-                onChangeText={handleChange('date')}
-                onBlur={handleBlur('date')}
-                placeholder="JJ/MM/AAAA"
-              />
+
+                <TouchableOpacity onPress={showPicker}>
+                    <Text
+                        style={[styles.txtInput, { color: '#FFF', justifyContent: 'center', paddingTop: 12 }]}
+                        placeholder="Entrez une date"
+                        onChangeText={handleChange('date')}
+                        onBlur={handleBlur('date')}
+                        value={date}
+                    >
+                        {date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}
+
+                    </Text>
+
+                </TouchableOpacity>
+
+                {isPickerShow && (
+                    <DateTimePicker
+                        value={date}
+                        mode={'date'}
+                        locale="fr-FR"
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        onChange={onChange}
+                        style={styles.datePicker}
+                    />
+                )}
+
               {errors.date &&
                 <Text style={styles.error}>{errors.date}</Text>
               }
 
+              <View style={styles.dropDownStyle}>
+                  <Picker
+                    //selectedValue={'category'}
+                    style={{color: '#fff', placeholderTextColor: '#fff'}}
+                    backgroundColor='#2B6747'
+                    onValueChange={handleChange('category')}
+                    placeholder="Selectionner une catégorie"
+                  >
+                    <Picker.Item label="Catégorie" value="" />
+                    <Picker.Item label="Salaire et assimilé" value="Salaire et assimilé" />
+                    <Picker.Item label="Revenu financier" value="Revenu financier" />
+                    <Picker.Item label="Rente" value="Rente" />
+                    <Picker.Item label="Pension alimentaire" value="Pension alimentaire" />
+                    <Picker.Item label="Allocation chômage" value="Allocation chômage" />
+                    <Picker.Item label="Prestations sociales" value="Prestations sociales" />
+                    <Picker.Item label="Revenu foncier" value="Revenu foncier" />
+                    <Picker.Item label="Revenu exceptionnel" value="Revenu exceptionnel" />
+                    <Picker.Item label="Autre revenu" value="Autre revenu" />
 
-              <TextInput
-                style={styles.dropDownStyle}
-                onChangeText={handleChange('category')}
-                onBlur={handleBlur('category')}
-
-              />
+                  </Picker>
+                </View>
               {errors.category &&
                 <Text style={styles.error}>{errors.category}</Text>
               }

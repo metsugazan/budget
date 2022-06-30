@@ -7,9 +7,24 @@ import dayjs from 'dayjs'
 import * as Yup from 'yup';
 import UserContext from "../components/UserContext";
 import firestore from '@react-native-firebase/firestore';
+import DateTimePicker from '@react-native-community/datetimepicker'
 
-const AddExpenseScreen = () => {
+
+const AddExpenseScreen = ({ navigation }) => {
   const UserContext_ = useContext(UserContext)
+  const [isPickerShow, setIsPickerShow] = useState(false);
+  const [date, setDate] = useState(new Date());
+
+  const showPicker = () => {
+    setIsPickerShow(true);
+  };
+
+  const onChange = (event, value) => {
+    setDate(value);
+    if (Platform.OS === 'android') {
+      setIsPickerShow(false);
+    }
+  };
 
   const CategoryList = [
     "Alimentaire",
@@ -21,7 +36,7 @@ const AddExpenseScreen = () => {
     "Vacances",
     "Shopping",
     "Autre"
-]
+  ]
 
   const addExpenses = async ({ amount, date, category, comments }) => {
     await firestore().collection('Users').doc(UserContext_.user.uid).collection('expenses').add({
@@ -43,9 +58,9 @@ const AddExpenseScreen = () => {
     amount: Yup
       .number("Montant invalide")
       .required("Mettre un montant"),
-    date: Yup
+    /*date: Yup
       .date('Date invalide')
-      .default(() => new Date()),
+      .default(() => new Date()),*/
     category: Yup
       .string()
       .required("Selectionner une catégorie")
@@ -88,23 +103,64 @@ const AddExpenseScreen = () => {
                 <Text style={styles.error}>{errors.amount}</Text>
               }
 
-              <TextInput
-                label="Date de déclaration"
-                style={styles.txtInput}
-                onChangeText={handleChange('date')}
-                onBlur={handleBlur('date')}
-                placeholder="JJ/MM/AAAA"
-              />
+              <TouchableOpacity onPress={showPicker}>
+               {/* <Text
+                  style={[styles.txtInput, { color: '#FFF', justifyContent: 'center', paddingTop: 12 }]}
+                  placeholder="Entrez une date"
+                  onChangeText={handleChange('date')}
+                  onBlur={handleBlur('date')}
+                  value={date}
+                >
+
+                  {date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}
+
+                </Text>*/}
+                <TextInput
+                  style={[styles.txtInput, { color: '#FFF', justifyContent: 'center', paddingTop: 12 }]}
+                  onChangeText={[handleChange('date'), setDate(date)]}
+                  onBlur={handleBlur('date')}
+                  editable={false}
+                  placeholder="Entrez une date"
+                  value={date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()}
+                />
+
+              </TouchableOpacity>
+
+              {isPickerShow && (
+                <DateTimePicker
+                  value={date}
+                  mode={'date'}
+                  locale="fr-FR"
+                  display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                  onChange={onChange}
+                  style={styles.datePicker}
+                />
+              )}
               {errors.date &&
                 <Text style={styles.error}>{errors.date}</Text>
               }
 
-              <TextInput
-                style={styles.input}
-                onChangeText={handleChange('category')}
-                onBlur={handleBlur('category')}
+              <View style={styles.dropDownStyle}>
+                <Picker
+                  selectedValue={'category'}
+                  style={{ color: '#fff', placeholderTextColor: '#fff' }}
+                  backgroundColor='#2B6747'
+                  value ={'category'}
+                  onValueChange={handleChange('category')}
+                >
+                  <Picker.Item label="Catégorie" value="" />
+                  <Picker.Item label="Alimentaires" value="Alimentaires" />
+                  <Picker.Item label="Factures" value="Factures" />
+                  <Picker.Item label="Transport" value="Transport" />
+                  <Picker.Item label="Logement" value="Logement" />
+                  <Picker.Item label="Santé" value="Santé" />
+                  <Picker.Item label="Vacances" value="Vacances" />
+                  <Picker.Item label="Shopping" value="Shopping" />
+                  <Picker.Item label="Autre" value="Autre" />
 
-              />
+                </Picker>
+              </View>
+
               {errors.category &&
                 <Text style={styles.error}>{errors.category}</Text>
               }
@@ -112,8 +168,6 @@ const AddExpenseScreen = () => {
               <TextInput
                 label="Commentaire"
                 style={styles.txtComment}
-                multiline={true}
-                numberOfLines={4}
                 onChangeText={handleChange('comments')}
                 onBlur={handleBlur('comments')}
               />

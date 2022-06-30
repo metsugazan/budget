@@ -1,93 +1,40 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 
-import { Picker } from '@react-native-picker/picker';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
 
 import UserContext from "../components/UserContext";
-import firestore from '@react-native-firebase/firestore';
 import TransacComponent from "../components/TransacComponent";
+import  auth from '@react-native-firebase/auth';
+
 
 
 const HomeScreen = ({ navigation }) => {
 
-    /*const [id, setId] = useState(data[0]._id)
-    const [user, setUser] = useState(data[0].user)
-    const [incomes, setIncomes] = useState(data[0].incomes)
-    const [expenses, setExpenses] = useState(data[0].expenses)
-    const [date, setDate] = useState(data[0].date)
-    const [amount, setAmount] = useState(data[0].amount)
-    const [category, setCategory] = useState(data[0].category)
-    const [comments, setComments] = useState(data[0].comments)
-    const [_id_income, set_id_income] = useState(data[0]._id_income)
-
-    const contextValue = useContext(GlobalContext)
-    //const [user, setUser] = useState(contextValue.user);
-    const [userData, setUserData] = useState(data[contextValue.index])
-
-
-
-    const totalIncome = incomes.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
-    const totalExpenses = expenses.map(item => item.amount.replace('€', '').replace(',', '')).reduce((acc, item) => parseFloat(acc) + parseFloat(item), 0).toFixed(2)
-    const totalBalance = (parseFloat(totalIncome) - parseFloat(totalExpenses)).toFixed(2)*/
-    const [expenses, setExpenses] = useState([])
-    const [incomes, setIncomes] = useState([])
-    const [data_, setdata_] = useState([])
-
     const UserContext_ = useContext(UserContext)
 
-    const GetData = async () => {
-
-        await firestore()
-            .collection('Users')
-            .doc(UserContext_.user.uid)
-            .collection('incomes')
-            .onSnapshot(documentSnapshot => {
-
-                if (documentSnapshot != null) {
-                    console.log(typeof (documentSnapshot), documentSnapshot)
-                    setIncomes(documentSnapshot._docs)
-                } else {
-                    console.log("Document inexistant");
-                }
-
-            })
-
-        await firestore()
-            .collection('Users')
-            .doc(UserContext_.user.uid)
-            .collection('expenses')
-            .onSnapshot(documentSnapshot => {
-
-                if (documentSnapshot != null) {
-                    console.log(typeof (documentSnapshot), documentSnapshot)
-                    setExpenses(documentSnapshot._docs)
-                } else {
-                    console.log("Document inexistant");
-                }
-
-            })
-
-        setdata_(expenses.concat(incomes))
-    }
-
-    useEffect(() => {
-        GetData()
-    }, [UserContext_.user.uid]);
 
 
-
+      const onLogout = () => {
+        auth().signOut().then(function() {
+          console.log("Sign-out successful.");
+        }).catch(function(error) {
+          console.log("An error happened when signing out");
+        });
+        navigation.navigate('login')
+      }
 
     return (
         <View style={styles.container}>
             <View style={styles.containerSolde}>
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1, alignItems: 'flex-start', marginLeft: 10 }}>
-                        <Text style={styles.txtSolde}>Bonjour {UserContext_.user.email.split("@")[0]} !</Text>
+                <View style={{flexDirection: 'row', alignItems:'center'}}>
+                <View style={{ flex: 1, alignItems: 'center', marginLeft: 10, justifyContent: 'center' }}>
+                    <Text style={styles.txtSolde}>Bonjour {UserContext_.user.email.split("@")[0]} !</Text>
+                    <Text style={styles.txtSolde}>Votre solde est de : {UserContext_.solde.toFixed(2)} € <Entypo name="wallet" size={24} /></Text>
+                </View>
+                <TouchableOpacity onPress={() => {onLogout()}} ><MaterialCommunityIcons name='logout' size={40} style={{ color: 'white', marginRight:10}} /></TouchableOpacity>
 
-                        <Text style={styles.txtSolde}>Solde : TOTAL € <Entypo name="wallet" size={24} /></Text>
-                    </View>
                 </View>
             </View>
 
@@ -95,9 +42,17 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.boxTransac}>
                 <Text style={styles.txtTitleCol}>Débit</Text>
                 <ScrollView>
-                    {data_.map((item, index) => (
+                    {UserContext_.expenses_array.slice(0,3).map((item, index) => (
                         <View key={index}>
-                            <TransacComponent category={item._data.category} date={item._data.date} montant={((typeof(item._data.incomes) == "undefined") ? -Number(item._data.amount) : Number(item._data.amount))} /> 
+                            <TransacComponent category={item._data.category} date={item._data.date} montant={((typeof (item._data.incomes) == "undefined") ? -Number(item._data.amount) : Number(item._data.amount))} />
+                        </View>
+                    ))}
+                </ScrollView>
+                <Text style={styles.txtTitleCol}>Crédit</Text>
+                <ScrollView>
+                    {UserContext_.incomes_array.slice(0,3).map((item, index) => (
+                        <View key={index}>
+                            <TransacComponent category={item._data.category} date={item._data.date} montant={((typeof (item._data.incomes) == "undefined") ? -Number(item._data.amount) : Number(item._data.amount))} />
                         </View>
                     ))}
                 </ScrollView>

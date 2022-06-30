@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet, Image, TextInput  } from 'react-native';
 import { TextInput as TextInputEye } from 'react-native-paper';
 import auth from '@react-native-firebase/auth'
+import UserContext from '../components/UserContext';
 
 const LoginScreen = ({navigation}) => {
     const [passwordVisible, setPasswordVisible] = useState(true);
@@ -15,6 +16,7 @@ const LoginScreen = ({navigation}) => {
     const [color, setColor] = useState('red');
 
 
+
     const LogInUser = () => {
 
         auth()
@@ -22,6 +24,8 @@ const LoginScreen = ({navigation}) => {
         .then((res) => {
           console.log(res);
           navigation.navigate('home')
+          setEmail("");
+          setPassword("");
           
         })
         .catch((res) => {
@@ -76,13 +80,7 @@ const LoginScreen = ({navigation}) => {
         }
 
         if (emailValid && passwordValid) {
-
             LogInUser()          
-            //setEmail("");
-            //setPassword("");
-            //setConfirmPassword("");
-            //navigation.navigate('Accueil')
-            //navigate('NextInscription');
         }
     }
 
@@ -111,6 +109,10 @@ const LoginScreen = ({navigation}) => {
             setColor('green');
         }
     };
+
+
+
+
     return (
         <View style={{ flex: 1 }}>
             <View style={{ flex: 0.60, alignItems: 'center', justifyContent: 'center' }}>
